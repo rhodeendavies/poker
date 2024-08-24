@@ -1,0 +1,77 @@
+.card {
+	border-radius: .25rem;
+	display: grid;
+	grid-template-columns: .75rem 3fr .75rem;
+	grid-template-rows: 1fr 6fr 1fr;
+	box-shadow: 0 .2rem .5rem rgba(0, 0, 0, .5);
+	padding: .5rem;
+	width: 7rem;
+	height: 10rem;
+	background-color: white;
+
+	&.hearts,
+	&.diamonds {
+		color: #df0000;
+	}
+
+	&.spades,
+	&.clubs {
+		color: black;
+	}
+
+	.rank {
+		font-weight: 700;
+
+		&:last-child {
+			grid-area: 3 / 3;
+			transform: rotate(180deg);
+		}
+	}
+
+	.suits {
+		grid-area: 1 / 2 / span 3 / 2;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+
+		.suit-column {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-evenly;
+
+			&:first-child:last-child {
+				grid-column: 1 / span 3;
+
+				.suit {
+					font-size: 4rem;
+				}
+			}
+
+			.suit {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				// flex: 1;
+				font-size: 2rem;
+
+				&:nth-last-child(1),
+				&:nth-last-child(2) {
+					transform: rotate(180deg);
+				}
+
+				&:nth-child(1),
+				&:nth-child(2):nth-last-child(2) {
+					transform: rotate(0deg);
+				}
+			}
+		}
+	}
+
+	.suit-image {
+		grid-area: 1 / 2 / span 3 / 2;
+
+		img {
+			width: 100%;
+			max-height: 100%;
+		}
+	}
+}

@@ -5,8 +5,8 @@ export type Card = {
 }
 
 export enum Suit {
-	spade = "s",
-	heart = "h",
-	clover = "c",
-	diamond = "d"
+	spades = "spades",
+	hearts = "hearts",
+	clubs = "clubs",
+	diamonds = "diamonds"
 }

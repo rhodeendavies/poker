@@ -1,0 +1,37 @@
+button {
+	font-size: 1rem;
+	border-radius: .25rem;
+	transition: all .15s ease-in-out;
+	cursor: pointer;
+	background-color: transparent;
+	padding: 1rem 2rem;
+	border-radius: 3rem;
+	text-transform: uppercase;
+	color: white;
+	font-weight: 500;
+	border: .2rem solid #c0fffb;
+	white-space: nowrap;
+
+	&:hover {
+		background-color: rgba(103, 245, 236, 0.3);
+	}
+}
+
+.hand-size-options {
+	display: block;
+	width: 100%;
+	padding: .375rem 2.25rem .375rem .75rem;
+	font-size: 1rem;
+	font-weight: 400;
+	background-color: #fff;
+	border: 1px solid #ced4da;
+	border-radius: .25rem;
+	transition: all .15s ease-in-out;
+
+	option {
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		color: #212529;
+	}
+}

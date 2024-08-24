@@ -1,0 +1,30 @@
+select {
+	display: block;
+	width: 100%;
+	padding: .375rem 2.25rem .375rem .75rem;
+	font-size: 1rem;
+	font-weight: 400;
+	background-color: transparent;
+	border-radius: .25rem;
+	transition: all .15s ease-in-out;
+	border: .2rem solid #c0fffb;
+	color: white;
+
+	option {
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		color: #212529;
+	}
+}
+
+.select-group {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+
+	label {
+		color: white;
+		text-transform: uppercase;
+	}
+}

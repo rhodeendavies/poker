@@ -1,12 +1,25 @@
-import { NextResponse } from "next/server";
-import * as PokerEvaluator from 'poker-evaluator-ts';
+import { Card, Suit } from '@/app/lib/card';
+import { RankNumberToRankString } from '@/app/lib/utils';
+import { NextRequest, NextResponse } from 'next/server';
+import { evalHand } from 'poker-evaluator';
 
-export async function GET(request: Request) {
-	const { searchParams } = new URL(request.url);
-	const handParam = searchParams.get("hand");
-	const hand = handParam?.split(",") ?? [];
-	return NextResponse.json({ content: hand });
-
-	return NextResponse.json({ content: PokerEvaluator.evalHand(['As', 'Ks', 'Qs', 'Js', 'Ts', '3c', '5h']) });
+export async function POST(request: NextRequest) {
+	const hand: Card[] = await request.json();
+	const handString = hand.map(x => `${RankNumberToRankString(x.rank, true)}${SuitToSuitString(x.suit)}`);
+	return NextResponse.json({ content: evalHand(handString) });
 }
 
+function SuitToSuitString(suit: Suit): string {
+	switch (suit) {
+		case Suit.clubs:
+			return "c";
+		case Suit.hearts:
+			return "h";
+		case Suit.diamonds:
+			return "d";
+		case Suit.spades:
+			return "s";
+		default:
+			return "";
+	}
+}
