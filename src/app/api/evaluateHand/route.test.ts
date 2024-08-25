@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { POST, SuitToSuitString } from './route';
+import { POST } from './route';
 import { Card, Suit } from '@/app/lib/card';
 import { RankNumberToRankString } from '@/app/lib/utils';
 import { evalHand } from 'poker-evaluator';
@@ -8,10 +8,6 @@ jest.mock('next/server', () => ({
 	NextResponse: {
 		json: jest.fn(),
 	},
-}));
-
-jest.mock('../../lib/utils', () => ({
-	RankNumberToRankString: jest.fn(),
 }));
 
 jest.mock('poker-evaluator', () => ({
@@ -40,28 +36,14 @@ describe('POST function', () => {
 		];
 
 		request.json.mockResolvedValue(hand);
-		(RankNumberToRankString as jest.Mock).mockImplementation((rank: number) => rank.toString());
 		(evalHand as jest.Mock).mockReturnValue({ value: 42 });
 
 		// act
 		await POST(request);
 
 		// assert
-		expect(RankNumberToRankString).toHaveBeenCalledTimes(hand.length);
-		expect(evalHand).toHaveBeenCalledWith(['1s', '13h', '10d', '5c', '7s']);
+		expect(evalHand).toHaveBeenCalledWith(['As', 'Kh', 'Td', '5c', '7s']);
 		expect(NextResponse.json).toHaveBeenCalledWith({ content: { value: 42 } });
 	});
 });
 
-describe('SuitToSuitString function', () => {
-	it('should return the correct suit string for each suit', () => {
-		expect(SuitToSuitString(Suit.clubs)).toBe('c');
-		expect(SuitToSuitString(Suit.hearts)).toBe('h');
-		expect(SuitToSuitString(Suit.diamonds)).toBe('d');
-		expect(SuitToSuitString(Suit.spades)).toBe('s');
-	});
-
-	it('should return an empty string for an unknown suit', () => {
-		expect(SuitToSuitString('unknown' as Suit)).toBe('');
-	});
-});

@@ -1,5 +1,5 @@
 import { Suit } from "./card";
-import { GetCardFace, GetSuitUnicode, RankNumberToRankString } from "./utils";
+import { CreateDeck, GetCardFace, GetSuitUnicode, RankNumberToRankString, ShuffledDeck, SuitToSuitString } from "./utils";
 
 describe("GetSuitUnicode", () => {
 	test.each(
@@ -165,4 +165,59 @@ describe("GetCardFace", () => {
 	)("returns the correct image for %i", (card, expected) => {
 		expect(GetCardFace(card)).toStrictEqual(expected)
 	})
+});
+
+describe('SuitToSuitString function', () => {
+	it('should return the correct suit string for each suit', () => {
+		expect(SuitToSuitString(Suit.clubs)).toBe('c');
+		expect(SuitToSuitString(Suit.hearts)).toBe('h');
+		expect(SuitToSuitString(Suit.diamonds)).toBe('d');
+		expect(SuitToSuitString(Suit.spades)).toBe('s');
+	});
+
+	it('should return an empty string for an unknown suit', () => {
+		expect(SuitToSuitString('unknown' as Suit)).toBe('');
+	});
+});
+
+describe("ShuffledDeck function", () => {
+	it("should shuffle the deck", () => {
+		// arrange
+		const originalDeck = CreateDeck();
+
+		// act
+		const shuffledDeck = ShuffledDeck([...originalDeck]);
+
+		// assert
+		expect(shuffledDeck).toHaveLength(originalDeck.length);
+		expect(shuffledDeck).not.toEqual(originalDeck);
+	});
+});
+
+describe("CreateDeck function", () => {
+	it("should create a deck of 52 cards", () => {
+		// act
+		const deck = CreateDeck();
+
+		// assert
+		expect(deck).toHaveLength(52);
+	});
+
+	it("should have 13 cards of each suit", () => {
+		const suitsCount = {
+			[Suit.spades]: 0,
+			[Suit.hearts]: 0,
+			[Suit.clubs]: 0,
+			[Suit.diamonds]: 0,
+		};
+
+		// act
+		const deck = CreateDeck();
+		deck.forEach(card => suitsCount[card.suit]++);
+
+		// assert
+		Object.values(suitsCount).forEach(count => {
+			expect(count).toBe(13);
+		});
+	});
 });

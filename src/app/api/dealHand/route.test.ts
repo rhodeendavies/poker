@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { GET, ShuffledDeck, CreateDeck } from "./route";
-import { Card, Suit } from "../../lib/card";
+import { GET } from "./route";
 
 jest.mock("next/server", () => ({
 	NextResponse: {
@@ -58,44 +57,3 @@ describe("GET function", () => {
 	});
 });
 
-describe("ShuffledDeck function", () => {
-	it("should shuffle the deck", () => {
-		// arrange
-		const originalDeck = CreateDeck();
-
-		// act
-		const shuffledDeck = ShuffledDeck([...originalDeck]);
-
-		// assert
-		expect(shuffledDeck).toHaveLength(originalDeck.length);
-		expect(shuffledDeck).not.toEqual(originalDeck);
-	});
-});
-
-describe("CreateDeck function", () => {
-	it("should create a deck of 52 cards", () => {
-		// act
-		const deck = CreateDeck();
-
-		// assert
-		expect(deck).toHaveLength(52);
-	});
-
-	it("should have 13 cards of each suit", () => {
-		const suitsCount = {
-			[Suit.spades]: 0,
-			[Suit.hearts]: 0,
-			[Suit.clubs]: 0,
-			[Suit.diamonds]: 0,
-		};
-
-		// act
-		const deck = CreateDeck();
-		deck.forEach(card => suitsCount[card.suit]++);
-
-		// assert
-		Object.values(suitsCount).forEach(count => {
-			expect(count).toBe(13);
-		});
-	});
-});
