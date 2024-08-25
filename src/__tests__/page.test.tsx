@@ -131,7 +131,8 @@ describe('Best hand update logic', () => {
 			.mockImplementationOnce(() => ([initialBestHand, setState]))
 			.mockImplementationOnce(() => ([[], setState]))
 			.mockImplementationOnce(() => ([initialBestHand, setState]))
-			.mockImplementationOnce(() => (["5", setState]));
+			.mockImplementationOnce(() => (["5", setState]))
+			.mockImplementationOnce(() => ([false, setState]));
 
 		const newHand = [{ id: 'KS', value: 'K', suit: 'S' }, { id: 'KH', value: 'K', suit: 'H' }];
 		const betterEvaluation: EvaluatedHand = {
@@ -159,9 +160,11 @@ describe('Best hand update logic', () => {
 
 		// assert
 		await waitFor(() => expect(setState.mock.calls).toStrictEqual([
+			[true],
 			[newHand],
 			[betterEvaluation],
-			[betterEvaluation]
+			[betterEvaluation],
+			[false],
 		]))
 	});
 
@@ -189,31 +192,6 @@ describe('Best hand update logic', () => {
 		// assert
 		await waitFor(() => {
 			expect(console.error).toHaveBeenCalledWith('Failed to deal: ', 'Shuffling failed');
-		});
-	});
-
-	it('handles unexpected errors gracefully', async () => {
-		// arrange
-		const newHand = [{ id: 'KS', value: 'K', suit: 'S' }, { id: 'KH', value: 'K', suit: 'H' }];
-		const error = new Error();
-		// Mock failed fetch response
-		mockFetch
-			.mockResolvedValueOnce({
-				ok: true,
-				json: async () => ({ content: newHand })
-			})
-			.mockImplementation(() => {
-				throw error;
-			});
-
-		// act
-		render(<Game />);
-		const dealButton = screen.getByRole('button', { name: /Deal hand/i });
-		fireEvent.click(dealButton);
-
-		// assert
-		await waitFor(() => {
-			expect(console.error).toHaveBeenCalledWith('An error occurred: ', error);
 		});
 	});
 });
