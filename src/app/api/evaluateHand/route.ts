@@ -6,5 +6,13 @@ import { evalHand } from 'poker-evaluator';
 export async function POST(request: NextRequest) {
 	const hand: Card[] = await request.json();
 	const handString = hand.map(x => `${RankNumberToRankString(x.rank, true)}${SuitToSuitString(x.suit)}`);
-	return NextResponse.json({ content: evalHand(handString) });
+	return NextResponse.json({
+		content: evalHand(handString),
+		headers: {
+			headers: {
+				"Access-Control-Allow-Origin": "*",
+				"Access-Control-Allow-Methods": ["POST"]
+			},
+		},
+	});
 }
