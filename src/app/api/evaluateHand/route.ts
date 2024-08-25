@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
 	return NextResponse.json({ content: evalHand(handString) });
 }
 
-function SuitToSuitString(suit: Suit): string {
+export function SuitToSuitString(suit: Suit): string {
 	switch (suit) {
 		case Suit.clubs:
 			return "c";

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { Card, Suit } from "../../lib/card";
+import { Card, Suit } from "@/app/lib/card";
 
 let deck: Card[] = [];
 
-export async function GET(request: Request): Promise<NextResponse<
-	{ content: Card[]; }>> {
+export async function GET(request: Request) {
+	if (request == null) return NextResponse.error();
+
 	const { searchParams } = new URL(request.url);
 	const handSizeParam = searchParams.get("handSize");
 	const handSize = Number(handSizeParam);
@@ -18,7 +19,7 @@ export async function GET(request: Request): Promise<NextResponse<
 	return NextResponse.json({ content: hand });
 }
 
-function ShuffledDeck(deck: Card[]): Card[] {
+export function ShuffledDeck(deck: Card[]): Card[] {
 	for (let i = deck.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
 		[deck[i], deck[j]] = [deck[j], deck[i]];
@@ -26,7 +27,7 @@ function ShuffledDeck(deck: Card[]): Card[] {
 	return deck;
 }
 
-function CreateDeck(): Card[] {
+export function CreateDeck(): Card[] {
 	const deck: Card[] = [];
 	const suits: Suit[] = [Suit.spades, Suit.hearts, Suit.clubs, Suit.diamonds];
 	for (let rank = 1; rank <= 13; rank++) {

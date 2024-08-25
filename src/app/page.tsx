@@ -1,16 +1,16 @@
 'use client';
 
-import { useState } from "react"
 import { EvaluatedHand } from "poker-evaluator/lib/types";
 import styles from "./page.module.scss";
 import { Card } from "./lib/card";
 import CardView from "./ui/card/cardView";
+import React from "react";
 
 export default function Game() {
-	const [bestHand, setBestHand] = useState<EvaluatedHand | null>(null);
-	const [hand, setHand] = useState<Card[]>([]);
-	const [result, setResult] = useState<EvaluatedHand>();
-	const [handSize, setHandSize] = useState<string>("5");
+	const [bestHand, setBestHand] = React.useState<EvaluatedHand | null>(null);
+	const [hand, setHand] = React.useState<Card[]>([]);
+	const [result, setResult] = React.useState<EvaluatedHand>();
+	const [handSize, setHandSize] = React.useState<string>("5");
 
 	const handSizeOptions = ["3", "5", "6", "7"];
 
@@ -26,7 +26,6 @@ export default function Game() {
 			}
 		} catch (error) {
 			console.error("An error occurred: ", error);
-
 		}
 	};
 
@@ -47,7 +46,6 @@ export default function Game() {
 			}
 		} catch (error) {
 			console.error("An error occurred: ", error);
-
 		}
 	}
 

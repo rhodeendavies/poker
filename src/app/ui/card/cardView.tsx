@@ -31,13 +31,19 @@ export default function CardView({ card }: { card: Card }) {
 	if (card.rank <= 10) {
 		suit = (
 			<div className={styles.suits}>
-				{suitIcons.map((y, iy) => {
+				{suitIcons.map((column, columnIndex) => {
 					return (
-						<div key={iy} className={styles['suit-column']}>
-							{y.map((x, i) => {
+						<div
+							key={`${card.id}-column${columnIndex}`}
+							data-testid={`${card.id}-column${columnIndex}`}
+							className={styles['suit-column']}>
+							{column.map((icon, iconId) => {
 								return (
-									<div key={i} className={styles.suit}>
-										{x}
+									<div
+										key={`${card.id}-column${columnIndex}-${iconId}`}
+										data-testid={`${card.id}-column${columnIndex}-${iconId}`}
+										className={styles.suit}>
+										{icon}
 									</div>
 								);
 							})}
@@ -50,18 +56,20 @@ export default function CardView({ card }: { card: Card }) {
 		const { src, alt } = GetCardFace(card);
 		suit = (
 			<div className={styles['suit-image']}>
-				<Image
-					src={src}
-					width={200}
-					height={200}
-					alt={alt}
-				/>
+				{src && alt &&
+					<Image
+						src={src}
+						width={200}
+						height={200}
+						alt={alt}
+					/>
+				}
 			</div>
 		)
 	}
 
 	return (
-		<div className={clsx(
+		<div data-testid={card.id} className={clsx(
 			styles.card,
 			{
 				[styles.hearts]: card.suit == Suit.hearts,
