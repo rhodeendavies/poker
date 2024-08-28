@@ -1,0 +1,295 @@
+diff --git a/node_modules/poker-evaluator/lib/poker-evaluator.js b/node_modules/poker-evaluator/lib/poker-evaluator.js
+index bfc3419..24edea6 100644
+--- a/node_modules/poker-evaluator/lib/poker-evaluator.js
++++ b/node_modules/poker-evaluator/lib/poker-evaluator.js
+@@ -7,64 +7,64 @@ var path = tslib_1.__importStar(require("path"));
+ var constants_1 = require("./constants");
+ var three_card_converter_1 = tslib_1.__importDefault(require("./three-card-converter"));
+ // This is outside the class so evalHand is static, to keep same api as @chenosaurus/poker-evaluator
+-var RANKS_DATA = fs.readFileSync(path.join(__dirname, '../data/HandRanks.dat'));
++var RANKS_DATA = fs.readFileSync(path.join(process.cwd(), '../data/HandRanks.dat'));
+ function evalHand(cards) {
+-    if (!RANKS_DATA) {
+-        throw new Error('HandRanks.dat not loaded.');
+-    }
+-    if (cards.length !== 7
+-        && cards.length !== 6
+-        && cards.length !== 5
+-        && cards.length !== 3) {
+-        throw new Error("Hand must be 3, 5, 6, or 7 cards, but " + cards.length + " cards were provided");
+-    }
+-    if (cardsAreValidNumbers(cards)) {
+-        if (cards.length === 3) {
+-            throw new Error("Please supply 3 card hands as string[] of \"cards\" only.");
+-        }
+-        return evaluate(cards);
+-    }
+-    else if (cardsAreValidStrings(cards)) {
+-        var stringCards = cards;
+-        if (stringCards.length === 3) { // If a 3 card hand, fill in to make 5 card
+-            stringCards = three_card_converter_1.default.fillHand(stringCards);
+-        }
+-        return evaluate(convertCardsToNumbers(stringCards));
+-    }
+-    else {
+-        throw new Error("\n      Please supply input as a valid string[] | number[] of \"cards\".\n      See src/constants/deck.const.ts for the deck's values\n    ");
+-    }
++	if (!RANKS_DATA) {
++		throw new Error('HandRanks.dat not loaded.');
++	}
++	if (cards.length !== 7
++		&& cards.length !== 6
++		&& cards.length !== 5
++		&& cards.length !== 3) {
++		throw new Error("Hand must be 3, 5, 6, or 7 cards, but " + cards.length + " cards were provided");
++	}
++	if (cardsAreValidNumbers(cards)) {
++		if (cards.length === 3) {
++			throw new Error("Please supply 3 card hands as string[] of \"cards\" only.");
++		}
++		return evaluate(cards);
++	}
++	else if (cardsAreValidStrings(cards)) {
++		var stringCards = cards;
++		if (stringCards.length === 3) { // If a 3 card hand, fill in to make 5 card
++			stringCards = three_card_converter_1.default.fillHand(stringCards);
++		}
++		return evaluate(convertCardsToNumbers(stringCards));
++	}
++	else {
++		throw new Error("\n      Please supply input as a valid string[] | number[] of \"cards\".\n      See src/constants/deck.const.ts for the deck's values\n    ");
++	}
+ }
+ exports.evalHand = evalHand;
+ function evalCard(card) {
+-    return RANKS_DATA.readUInt32LE(card * 4);
++	return RANKS_DATA.readUInt32LE(card * 4);
+ }
+ exports.evalCard = evalCard;
+ function convertCardsToNumbers(cards) {
+-    return cards.map(function (card) { return constants_1.DECK[card.toLowerCase()]; });
++	return cards.map(function (card) { return constants_1.DECK[card.toLowerCase()]; });
+ }
+ function cardsAreValidStrings(cards) {
+-    return cards.every(function (card) {
+-        return typeof card === 'string' && constants_1.DECK_KEYS.has(card.toLowerCase());
+-    });
++	return cards.every(function (card) {
++		return typeof card === 'string' && constants_1.DECK_KEYS.has(card.toLowerCase());
++	});
+ }
+ function cardsAreValidNumbers(cards) {
+-    return cards.every(function (card) {
+-        return typeof card === 'number' && constants_1.DECK_VALUES.has(card);
+-    });
++	return cards.every(function (card) {
++		return typeof card === 'number' && constants_1.DECK_VALUES.has(card);
++	});
+ }
+ function evaluate(cardValues) {
+-    var p = 53;
+-    cardValues.forEach(function (cardValue) { return p = evalCard(p + cardValue); });
+-    if (cardValues.length === 5 || cardValues.length === 6) {
+-        p = evalCard(p);
+-    }
+-    return {
+-        handType: p >> 12,
+-        handRank: p & 0x00000fff,
+-        value: p,
+-        handName: constants_1.HAND_TYPES[p >> 12]
+-    };
++	var p = 53;
++	cardValues.forEach(function (cardValue) { return p = evalCard(p + cardValue); });
++	if (cardValues.length === 5 || cardValues.length === 6) {
++		p = evalCard(p);
++	}
++	return {
++		handType: p >> 12,
++		handRank: p & 0x00000fff,
++		value: p,
++		handName: constants_1.HAND_TYPES[p >> 12]
++	};
+ }
+ /**
+  * This function takes the cards in a players hand as well as the community cards (if any) on the table.
+@@ -82,101 +82,101 @@ function evaluate(cardValues) {
+  * odds other than 0, instead yielding the correct ~0.0001.
+  */
+ function winningOddsForPlayer(hand, community, playerCount, cycles) {
+-    // Above 23 players, we run out of cards in a deck.  23 * 2 + 5 = 51
+-    if (playerCount > 23) {
+-        throw new Error("You may have at most 23 players.");
+-    }
+-    // Hand with no knowledge of other players hands
+-    return winningOddsForTable(tslib_1.__spreadArrays([hand], Array(playerCount - 1).fill([])), community, playerCount, cycles)['players'][0];
++	// Above 23 players, we run out of cards in a deck.  23 * 2 + 5 = 51
++	if (playerCount > 23) {
++		throw new Error("You may have at most 23 players.");
++	}
++	// Hand with no knowledge of other players hands
++	return winningOddsForTable(tslib_1.__spreadArrays([hand], Array(playerCount - 1).fill([])), community, playerCount, cycles)['players'][0];
+ }
+ exports.winningOddsForPlayer = winningOddsForPlayer;
+ function winningOddsForTable(knownPartialHands, community, playerCount, cycles) {
+-    var numCommunity = convertCardsToNumbers(community);
+-    var numHands = knownPartialHands.map(convertCardsToNumbers);
+-    var allHoleCards = numHands.reduce(function (group, currentHand) { return tslib_1.__spreadArrays(group, currentHand); }, []);
+-    var startingDeck = deckWithoutSpecifiedCards(tslib_1.__spreadArrays(numCommunity, allHoleCards));
+-    var startingSplits = [];
+-    for (var i = 0; i < playerCount; i++) {
+-        startingSplits.push(Array(playerCount - 1).fill(0));
+-    }
+-    var data = {
+-        'wins': Array(playerCount).fill(0),
+-        'splits': startingSplits
+-    };
+-    var _loop_1 = function (i) {
+-        shuffleDeck(startingDeck);
+-        var deckPosition = 0;
+-        var interimCommunity = tslib_1.__spreadArrays(numCommunity);
+-        // Fill in players cards from the deck if not provided
+-        var holeCards = [];
+-        for (var p = 0; p < playerCount; p++) {
+-            var card1 = numHands[p].length >= 1 ? numHands[p][0] : startingDeck[deckPosition++];
+-            var card2 = numHands[p].length == 2 ? numHands[p][1] : startingDeck[deckPosition++];
+-            holeCards.push([card1, card2]);
+-        }
+-        while (interimCommunity.length < 5) {
+-            interimCommunity.push(startingDeck[deckPosition++]);
+-        }
+-        // Calculate the ranks of each hand
+-        var handValues = holeCards.map(function (hand) { return evalHand(tslib_1.__spreadArrays(hand, interimCommunity)).value; });
+-        // Find the winning hands this round
+-        var winningIndexes = [];
+-        var bestRank = -1;
+-        for (var p = 0; p < playerCount; p++) {
+-            if (handValues[p] > bestRank) {
+-                winningIndexes = [p];
+-                bestRank = handValues[p];
+-            }
+-            else if (handValues[p] === bestRank) {
+-                winningIndexes.push(p);
+-            }
+-        }
+-        if (winningIndexes.length > 1) {
+-            for (var i_1 = 0; i_1 < winningIndexes.length; i_1++) {
+-                // Increment that players split count of this size
+-                data['splits'][winningIndexes[i_1]][winningIndexes.length - 2] += 1;
+-            }
+-        }
+-        else {
+-            data['wins'][winningIndexes[0]] += 1;
+-        }
+-    };
+-    for (var i = 0; i < cycles; i++) {
+-        _loop_1(i);
+-    }
+-    return buildPlayerData(data, cycles);
++	var numCommunity = convertCardsToNumbers(community);
++	var numHands = knownPartialHands.map(convertCardsToNumbers);
++	var allHoleCards = numHands.reduce(function (group, currentHand) { return tslib_1.__spreadArrays(group, currentHand); }, []);
++	var startingDeck = deckWithoutSpecifiedCards(tslib_1.__spreadArrays(numCommunity, allHoleCards));
++	var startingSplits = [];
++	for (var i = 0; i < playerCount; i++) {
++		startingSplits.push(Array(playerCount - 1).fill(0));
++	}
++	var data = {
++		'wins': Array(playerCount).fill(0),
++		'splits': startingSplits
++	};
++	var _loop_1 = function (i) {
++		shuffleDeck(startingDeck);
++		var deckPosition = 0;
++		var interimCommunity = tslib_1.__spreadArrays(numCommunity);
++		// Fill in players cards from the deck if not provided
++		var holeCards = [];
++		for (var p = 0; p < playerCount; p++) {
++			var card1 = numHands[p].length >= 1 ? numHands[p][0] : startingDeck[deckPosition++];
++			var card2 = numHands[p].length == 2 ? numHands[p][1] : startingDeck[deckPosition++];
++			holeCards.push([card1, card2]);
++		}
++		while (interimCommunity.length < 5) {
++			interimCommunity.push(startingDeck[deckPosition++]);
++		}
++		// Calculate the ranks of each hand
++		var handValues = holeCards.map(function (hand) { return evalHand(tslib_1.__spreadArrays(hand, interimCommunity)).value; });
++		// Find the winning hands this round
++		var winningIndexes = [];
++		var bestRank = -1;
++		for (var p = 0; p < playerCount; p++) {
++			if (handValues[p] > bestRank) {
++				winningIndexes = [p];
++				bestRank = handValues[p];
++			}
++			else if (handValues[p] === bestRank) {
++				winningIndexes.push(p);
++			}
++		}
++		if (winningIndexes.length > 1) {
++			for (var i_1 = 0; i_1 < winningIndexes.length; i_1++) {
++				// Increment that players split count of this size
++				data['splits'][winningIndexes[i_1]][winningIndexes.length - 2] += 1;
++			}
++		}
++		else {
++			data['wins'][winningIndexes[0]] += 1;
++		}
++	};
++	for (var i = 0; i < cycles; i++) {
++		_loop_1(i);
++	}
++	return buildPlayerData(data, cycles);
+ }
+ exports.winningOddsForTable = winningOddsForTable;
+ function buildPlayerData(rawData, cycles) {
+-    var playerCount = rawData['wins'].length;
+-    var players = [];
+-    for (var p = 0; p < playerCount; p++) {
+-        var winRate = rawData['wins'][p] / cycles;
+-        var splitList = [];
+-        for (var i = 0; i < rawData['splits'][0].length; i++) {
+-            splitList.push({ 'rate': rawData['splits'][p][i] / cycles, 'ways': i + 2 });
+-        }
+-        players.push({ 'winRate': winRate, 'splitRates': splitList });
+-    }
+-    return { 'players': players };
++	var playerCount = rawData['wins'].length;
++	var players = [];
++	for (var p = 0; p < playerCount; p++) {
++		var winRate = rawData['wins'][p] / cycles;
++		var splitList = [];
++		for (var i = 0; i < rawData['splits'][0].length; i++) {
++			splitList.push({ 'rate': rawData['splits'][p][i] / cycles, 'ways': i + 2 });
++		}
++		players.push({ 'winRate': winRate, 'splitRates': splitList });
++	}
++	return { 'players': players };
+ }
+ /**
+  * Given a list of cards already dealt out, return the remaining cards that would be in the deck.
+  */
+ function deckWithoutSpecifiedCards(cards) {
+-    var providedSet = new Set(cards);
+-    return Object.values(constants_1.DECK).filter(function (name) { return !providedSet.has(name); });
++	var providedSet = new Set(cards);
++	return Object.values(constants_1.DECK).filter(function (name) { return !providedSet.has(name); });
+ }
+ /**
+  * TS implementation of https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
+  * Code based on: https://stackoverflow.com/a/12646864
+  */
+ function shuffleDeck(deck) {
+-    var _a;
+-    for (var i = deck.length - 1; i > 0; i--) {
+-        var j = Math.floor(Math.random() * (i + 1));
+-        _a = [deck[j], deck[i]], deck[i] = _a[0], deck[j] = _a[1];
+-    }
++	var _a;
++	for (var i = deck.length - 1; i > 0; i--) {
++		var j = Math.floor(Math.random() * (i + 1));
++		_a = [deck[j], deck[i]], deck[i] = _a[0], deck[j] = _a[1];
++	}
+ }
+ console.log(winningOddsForPlayer(['ah', 'as'], [], 5, 1000));
+ //# sourceMappingURL=poker-evaluator.js.map
+\ No newline at end of file
