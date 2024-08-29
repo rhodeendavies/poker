@@ -1,13 +1,24 @@
+$mobile: 480px;
+$tablet: 768px;
+$laptop: 1024px;
+$desktop: 1200px;
+
 .card {
 	border-radius: .25rem;
 	display: grid;
-	grid-template-columns: .75rem 3fr .75rem;
+	grid-template-columns: 1fr 5fr 1fr;
 	grid-template-rows: 1fr 6fr 1fr;
 	box-shadow: 0 .2rem .5rem rgba(0, 0, 0, .5);
 	padding: .5rem;
 	width: 7rem;
 	height: 10rem;
 	background-color: white;
+
+	@media screen and (max-width: $mobile) {
+		padding: .25rem;
+		width: 3.5rem;
+		height: 5rem;
+	}
 
 	&.hearts,
 	&.diamonds {
@@ -21,6 +32,10 @@
 
 	.rank {
 		font-weight: 700;
+
+		@media screen and (max-width: $mobile) {
+			font-size: .75rem;
+		}
 
 		&:last-child {
 			grid-area: 3 / 3;
@@ -43,6 +58,10 @@
 
 				.suit {
 					font-size: 4rem;
+
+					@media screen and (max-width: $mobile) {
+						font-size: 3rem;
+					}
 				}
 			}
 
@@ -50,8 +69,11 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				// flex: 1;
 				font-size: 2rem;
+
+				@media screen and (max-width: $mobile) {
+					font-size: 1rem;
+				}
 
 				&:nth-last-child(1),
 				&:nth-last-child(2) {

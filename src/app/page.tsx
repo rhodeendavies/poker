@@ -61,10 +61,7 @@ export default function Game() {
 					<button onClick={updateHand}>
 						Deal hand
 					</button>
-					<div className={styles['best-hand']}>
-						<div>Best Hand</div>
-						<div>{bestHand?.result ?? "-"}</div>
-					</div>
+
 				</div>
 
 				{loading &&
@@ -81,6 +78,12 @@ export default function Game() {
 							<div className={styles.result}>{result?.result}!</div>
 						}
 					</>
+				}
+				{bestHand != null && bestHand.result != null &&
+					<div className={styles['best-hand']}>
+						<div>Best Hand</div>
+						<div>{bestHand.result}</div>
+					</div>
 				}
 			</div>
 		</div>
