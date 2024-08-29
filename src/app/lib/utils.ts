@@ -1,5 +1,11 @@
-import { Card, Suit } from "./card";
+import { Card, EvaluatedHand, Suit } from "./card";
+import PokerHand from "poker-hand-evaluator";
 
+/**
+ * GetSuitUnicode
+ * @param {Suit} suit - The suit
+ * @return {string}  return the unicode representation of the suit
+ */
 export function GetSuitUnicode(suit: Suit): string {
 	switch (suit) {
 		case Suit.clubs:
@@ -15,24 +21,11 @@ export function GetSuitUnicode(suit: Suit): string {
 	}
 }
 
-export function RankNumberToRankString(rank: number, forPokerEval: boolean): string {
-	if (rank > 1 && rank < 10) return `${rank}`;
-	switch (rank) {
-		case 1:
-			return "A";
-		case 10:
-			return forPokerEval ? "T" : "10";
-		case 11:
-			return "J";
-		case 12:
-			return "Q";
-		case 13:
-			return "K";
-		default:
-			return "";
-	}
-}
-
+/**
+ * GetCardFace
+ * @param {Card} card - The card
+ * @return {{ src: string, alt: string}} returns the source of the image and the accompanying alternative text
+ */
 export function GetCardFace(card: Card): { src: string, alt: string } {
 	let src = "";
 	let alt = "";
@@ -116,6 +109,11 @@ export function GetCardFace(card: Card): { src: string, alt: string } {
 	return { src: src, alt: alt }
 }
 
+/**
+ * ShuffledDeck
+ * @param {Card[]} deck - The deck, consisting of an array of Cards
+ * @return {Card[]} returns the shuffled deck
+ */
 export function ShuffledDeck(deck: Card[]): Card[] {
 	for (let i = deck.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
@@ -124,10 +122,14 @@ export function ShuffledDeck(deck: Card[]): Card[] {
 	return deck;
 }
 
+/**
+ * CreateDeck
+ * @return {Card[]} returns a deck of 52 cards, ordered by suit (spades, hearts, clubs, diamons) and by rank from 2 to Ace
+ */
 export function CreateDeck(): Card[] {
 	const deck: Card[] = [];
 	const suits: Suit[] = [Suit.spades, Suit.hearts, Suit.clubs, Suit.diamonds];
-	for (let rank = 1; rank <= 13; rank++) {
+	for (let rank = 2; rank <= 14; rank++) {
 		suits.forEach(suit => {
 			deck.push({
 				rank: rank,
@@ -139,17 +141,47 @@ export function CreateDeck(): Card[] {
 	return deck;
 }
 
-export function SuitToSuitString(suit: Suit): string {
-	switch (suit) {
-		case Suit.clubs:
-			return "c";
-		case Suit.hearts:
-			return "h";
-		case Suit.diamonds:
-			return "d";
-		case Suit.spades:
-			return "s";
+/**
+ * RankNumberToRankString
+ * @param {number} rank - The rank of the card (0-14)
+ * @param {boolean} forEval - Set to true if result is used by poker-hand-evaluator
+ * @return {string} returns a string representation of the card rank
+ */
+export function RankNumberToRankString(rank: number, forEval: boolean): string {
+	if (rank < 10 || (rank == 10 && !forEval)) return `${rank}`;
+	switch (rank) {
+		case 10:
+			return "T";
+		case 11:
+			return "J";
+		case 12:
+			return "Q";
+		case 13:
+			return "K";
+		case 14:
+			return "A";
 		default:
 			return "";
+	}
+}
+
+/**
+ * RankNumberToRankString
+ * @param {Card[]} hand - An array of cards, currently supported hand size of 5 cards
+ * @return {EvaluatedHand | null} returns the evaluated result of the hand, or null if the hand size is invalid
+ */
+export function EvaluateHand(hand: Card[]): EvaluatedHand | null {
+	if (hand.length != 5) return null;
+
+	const pokerHand = new PokerHand(hand.reduce((total, curr) => {
+		return `${total} ${RankNumberToRankString(curr.rank, true)}${(curr.suit.toString()[0].toUpperCase())}`
+	}, ""));
+
+	const value = pokerHand.getScore() * -1;
+	const result = pokerHand.getRank().replace(/_/g, " ");
+
+	return {
+		value: value,
+		result: result
 	}
 }

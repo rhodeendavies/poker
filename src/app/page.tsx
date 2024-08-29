@@ -1,9 +1,8 @@
 'use client';
 
-import { EvaluatedHand } from "poker-evaluator/lib/types";
 import styles from "./page.module.scss";
 import React from "react";
-import { Card } from "./lib/card";
+import { Card, EvaluatedHand } from "./lib/card";
 import { fetchHand, fetchEvaluation } from "./lib/data";
 import CardView from "./ui/card/cardView";
 
@@ -14,24 +13,28 @@ export default function Game() {
 	const [handSize, setHandSize] = React.useState<string>("5");
 	const [loading, setLoading] = React.useState<boolean>(false);
 
+	// possible supported hand sizes (poker-hand-evaluator does not support hand sizes other than 5)
 	const handSizeOptions = ["3", "5", "6", "7"];
-
-	function determineBestHand(result: EvaluatedHand) {
-		if (result.value > (bestHand?.value ?? 0)) {
-			setBestHand(result);
-		}
-	}
 
 	function handleHandSize(newHandSize: string) {
 		setHandSize(newHandSize);
 	}
 
+	function determineBestHand(result: EvaluatedHand) {
+		if (bestHand == null || bestHand?.value == null || result.value > bestHand?.value) {
+			setBestHand(result);
+		}
+	}
+
 	async function updateHand() {
 		setLoading(true);
+		// fetch new hand
 		const newHand: Card[] = await fetchHand(handSize);
 		setHand(newHand);
+		// fetch hand evaluation
 		const newResult: EvaluatedHand | null = await fetchEvaluation(newHand);
 		setResult(newResult);
+		// set best result based on new evaluation
 		if (newResult != null) {
 			determineBestHand(newResult);
 		}
@@ -46,21 +49,21 @@ export default function Game() {
 				</div>
 				<div className={styles.actions}>
 					<div className="select-group">
-						<label htmlFor="handSizeOptions">Hand size</label>
+						{/* <label htmlFor="handSizeOptions">Hand size</label>
 						<select id="handSizeOptions" value={handSize} onChange={e => handleHandSize(e.target.value)}>
 							{handSizeOptions.map(x => {
 								return (
 									<option value={x} key={x}>{x}</option>
 								)
 							})}
-						</select>
+						</select> */}
 					</div>
 					<button onClick={updateHand}>
 						Deal hand
 					</button>
 					<div className={styles['best-hand']}>
 						<div>Best Hand</div>
-						<div>{bestHand?.handName ?? "-"}</div>
+						<div>{bestHand?.result ?? "-"}</div>
 					</div>
 				</div>
 
@@ -75,7 +78,7 @@ export default function Game() {
 							})}
 						</div>
 						{result != null &&
-							<div className={styles.result}>{result?.handName}!</div>
+							<div className={styles.result}>{result?.result}!</div>
 						}
 					</>
 				}

@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom';
 import Game from '@/app/page';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { Card, Suit } from '@/app/lib/card';
-import { EvaluatedHand } from "poker-evaluator/lib/types";
+import { Card, EvaluatedHand, Suit } from '@/app/lib/card';
 import React from 'react';
 
 // Mock the fetch function globally
@@ -17,20 +16,7 @@ describe('Game Component', () => {
 
 		// assert
 		expect(screen.getByText('Poker')).toBeInTheDocument();
-		expect(screen.getByLabelText('Hand size')).toBeInTheDocument();
 		expect(screen.getByRole('button', { name: /Deal hand/i })).toBeInTheDocument();
-	});
-});
-
-describe('Hand size selection', () => {
-	it('allows the user to change the hand size', () => {
-		// act
-		render(<Game />);
-		const select = screen.getByLabelText('Hand size') as HTMLSelectElement;
-		fireEvent.change(select, { target: { value: '7' } });
-
-		// assert
-		expect(select.value).toBe('7');
 	});
 });
 
@@ -46,10 +32,8 @@ describe('Deal hand functionality', () => {
 			{ id: '2H', rank: 2, suit: Suit.hearts }
 		];
 		const mockEvaluation: EvaluatedHand = {
-			handName: 'high card',
-			value: 10,
-			handRank: 0,
-			handType: 0
+			result: 'high card',
+			value: 1,
 		};
 
 		// Mock fetch responses
@@ -121,9 +105,7 @@ describe('Best hand update logic', () => {
 	it('updates the best hand if the new hand is better', async () => {
 		// arrange
 		const initialBestHand: EvaluatedHand = {
-			handName: 'one pair',
-			handRank: 0,
-			handType: 0,
+			result: 'one pair',
 			value: 2
 		};
 		const setState = jest.fn();
@@ -136,10 +118,8 @@ describe('Best hand update logic', () => {
 
 		const newHand = [{ id: 'KS', value: 'K', suit: 'S' }, { id: 'KH', value: 'K', suit: 'H' }];
 		const betterEvaluation: EvaluatedHand = {
-			handName: 'three of a kind',
-			handRank: 0,
-			handType: 0,
-			value: 30
+			result: 'three of a kind',
+			value: 4
 		};
 
 		// Mock fetch responses

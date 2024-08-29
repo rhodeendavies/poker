@@ -10,3 +10,8 @@ export enum Suit {
 	clubs = "clubs",
 	diamonds = "diamonds"
 }
+
+export class EvaluatedHand {
+	value: number = 0;
+	result: string = "";
+}

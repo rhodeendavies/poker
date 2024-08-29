@@ -1,5 +1,4 @@
-import { EvaluatedHand } from "poker-evaluator/lib/types";
-import { Card } from "./card";
+import { Card, EvaluatedHand } from "./card";
 
 export async function fetchHand(handSize: string): Promise<Card[]> {
 	try {

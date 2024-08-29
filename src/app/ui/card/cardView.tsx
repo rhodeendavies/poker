@@ -5,30 +5,45 @@ import { GetCardFace, GetSuitUnicode, RankNumberToRankString } from "@/app/lib/u
 import Image from 'next/image';
 
 export default function CardView({ card }: { card: Card }) {
+	// each card is made up of columns with icons
 	const suitIcons: string[][] = [];
 	const suitIcon = GetSuitUnicode(card.suit);
-	if (card.rank == 1) {
+
+	if (card.rank == 14) {
+		// if the card is an ace, it has only 1 column with 1 icon inside
 		suitIcons.push([suitIcon]);
 	} else if (card.rank <= 10) {
+		// if the card is a number card, it has 3 columns with varying icons in each column
+
+		// the number of icons in the first and last columns are the same
+		// dividing by 2.3 is the most universal value to achieve the traditional card layout, the only exception being the value 3
 		const iconsPerCol = card.rank <= 3 ? 0 : Math.round(card.rank / 2.3);
+
+		// the number of icons in the first and last columns == iconsPerCol
 		const suits = [];
 		for (let suit = 0; suit < iconsPerCol; suit++) {
 			suits.push(suitIcon);
 		}
 
-		const middleCol = card.rank - (iconsPerCol * 2);
+		// first column
 		suitIcons.push(suits);
+
+		// middle column
+		// the number of icons in the middle column is equal to whatever is left from the first and last column
+		const middleCol = card.rank - (iconsPerCol * 2);
 		const middleSuits = [];
 		for (let suit = 0; suit < middleCol; suit++) {
 			middleSuits.push(suitIcon);
 		}
 		suitIcons.push(middleSuits);
 
+		// last column
 		suitIcons.push(suits);
 	}
 
 	let suit = null;
-	if (card.rank <= 10) {
+	if (card.rank <= 10 || card.rank == 14) {
+		// number cards build the columns
 		suit = (
 			<div className={styles.suits}>
 				{suitIcons.map((column, columnIndex) => {
@@ -53,6 +68,7 @@ export default function CardView({ card }: { card: Card }) {
 			</div>
 		)
 	} else {
+		// face cards use images
 		const { src, alt } = GetCardFace(card);
 		suit = (
 			<div className={styles['suit-image']}>

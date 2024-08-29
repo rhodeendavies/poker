@@ -1,5 +1,5 @@
 import { Suit } from "./card";
-import { CreateDeck, GetCardFace, GetSuitUnicode, RankNumberToRankString, ShuffledDeck, SuitToSuitString } from "./utils";
+import { CreateDeck, EvaluateHand, GetCardFace, GetSuitUnicode, RankNumberToRankString, ShuffledDeck } from "./utils";
 
 describe("GetSuitUnicode", () => {
 	test.each(
@@ -17,7 +17,7 @@ describe("GetSuitUnicode", () => {
 describe("RankNumberToRankString", () => {
 	test.each(
 		[
-			[1, "A"],
+			[14, "A"],
 			[2, "2"],
 			[3, "3"],
 			[10, "10"],
@@ -31,7 +31,7 @@ describe("RankNumberToRankString", () => {
 
 	test.each(
 		[
-			[1, "A"],
+			[14, "A"],
 			[2, "2"],
 			[3, "3"],
 			[10, "T"],
@@ -39,7 +39,7 @@ describe("RankNumberToRankString", () => {
 			[12, "Q"],
 			[13, "K"],
 		]
-	)("returns the correct rank string for %i for the poker eval function", (rank, expected) => {
+	)("returns the correct rank string for %i for the eval function", (rank, expected) => {
 		expect(RankNumberToRankString(rank, true)).toBe(expected)
 	});
 });
@@ -167,19 +167,6 @@ describe("GetCardFace", () => {
 	})
 });
 
-describe('SuitToSuitString function', () => {
-	it('should return the correct suit string for each suit', () => {
-		expect(SuitToSuitString(Suit.clubs)).toBe('c');
-		expect(SuitToSuitString(Suit.hearts)).toBe('h');
-		expect(SuitToSuitString(Suit.diamonds)).toBe('d');
-		expect(SuitToSuitString(Suit.spades)).toBe('s');
-	});
-
-	it('should return an empty string for an unknown suit', () => {
-		expect(SuitToSuitString('unknown' as Suit)).toBe('');
-	});
-});
-
 describe("ShuffledDeck function", () => {
 	it("should shuffle the deck", () => {
 		// arrange
@@ -221,3 +208,126 @@ describe("CreateDeck function", () => {
 		});
 	});
 });
+
+describe("EvaluateHand", () => {
+	test.each(
+		[
+			[[
+				{ rank: 14, suit: Suit.spades, id: '1s' },
+				{ rank: 13, suit: Suit.hearts, id: '13h' },
+				{ rank: 10, suit: Suit.diamonds, id: '10d' },
+				{ rank: 5, suit: Suit.clubs, id: '5c' },
+				{ rank: 7, suit: Suit.spades, id: '7s' },
+			], {
+				result: "HIGH CARD",
+				value: -6280
+			}],
+
+			[[
+				{ rank: 14, suit: Suit.spades, id: '1s' },
+				{ rank: 14, suit: Suit.hearts, id: '13h' },
+				{ rank: 10, suit: Suit.diamonds, id: '10d' },
+				{ rank: 5, suit: Suit.clubs, id: '5c' },
+				{ rank: 7, suit: Suit.spades, id: '7s' },
+			], {
+				result: "ONE PAIR",
+				value: -3476
+			}],
+
+			[[
+				{ rank: 14, suit: Suit.spades, id: '1s' },
+				{ rank: 14, suit: Suit.hearts, id: '13h' },
+				{ rank: 10, suit: Suit.diamonds, id: '10d' },
+				{ rank: 10, suit: Suit.clubs, id: '5c' },
+				{ rank: 7, suit: Suit.spades, id: '7s' },
+			], {
+				result: "TWO PAIRS",
+				value: -2506
+			}],
+
+			[[
+				{ rank: 14, suit: Suit.spades, id: '1s' },
+				{ rank: 14, suit: Suit.hearts, id: '13h' },
+				{ rank: 14, suit: Suit.diamonds, id: '10d' },
+				{ rank: 5, suit: Suit.clubs, id: '5c' },
+				{ rank: 7, suit: Suit.spades, id: '7s' },
+			], {
+				result: "THREE OF A KIND",
+				value: -1662
+			}],
+
+			[[
+				{ rank: 3, suit: Suit.spades, id: '1s' },
+				{ rank: 4, suit: Suit.hearts, id: '13h' },
+				{ rank: 5, suit: Suit.diamonds, id: '10d' },
+				{ rank: 6, suit: Suit.clubs, id: '5c' },
+				{ rank: 7, suit: Suit.spades, id: '7s' },
+			], {
+				result: "STRAIGHT",
+				value: -1607
+			}],
+
+			[[
+				{ rank: 14, suit: Suit.spades, id: '1s' },
+				{ rank: 12, suit: Suit.spades, id: '13h' },
+				{ rank: 10, suit: Suit.spades, id: '10d' },
+				{ rank: 5, suit: Suit.spades, id: '5c' },
+				{ rank: 7, suit: Suit.spades, id: '7s' },
+			], {
+				result: "FLUSH",
+				value: -537
+			}],
+
+			[[
+				{ rank: 14, suit: Suit.spades, id: '1s' },
+				{ rank: 14, suit: Suit.hearts, id: '13h' },
+				{ rank: 10, suit: Suit.diamonds, id: '10d' },
+				{ rank: 10, suit: Suit.clubs, id: '5c' },
+				{ rank: 10, suit: Suit.spades, id: '7s' },
+			], {
+				result: "FULL HOUSE",
+				value: -215
+			}],
+
+			[[
+				{ rank: 14, suit: Suit.spades, id: '1s' },
+				{ rank: 14, suit: Suit.hearts, id: '13h' },
+				{ rank: 14, suit: Suit.diamonds, id: '10d' },
+				{ rank: 14, suit: Suit.clubs, id: '5c' },
+				{ rank: 7, suit: Suit.spades, id: '7s' },
+			], {
+				result: "FOUR OF A KIND",
+				value: -17
+			}],
+
+			[[
+				{ rank: 2, suit: Suit.spades, id: '1s' },
+				{ rank: 3, suit: Suit.spades, id: '13h' },
+				{ rank: 4, suit: Suit.spades, id: '10d' },
+				{ rank: 5, suit: Suit.spades, id: '5c' },
+				{ rank: 6, suit: Suit.spades, id: '7s' },
+			], {
+				result: "STRAIGHT FLUSH",
+				value: -9
+			}],
+
+			[[
+				{ rank: 10, suit: Suit.hearts, id: '1s' },
+				{ rank: 11, suit: Suit.hearts, id: '13h' },
+				{ rank: 12, suit: Suit.hearts, id: '10d' },
+				{ rank: 13, suit: Suit.hearts, id: '5c' },
+				{ rank: 14, suit: Suit.hearts, id: '7s' },
+			], {
+				result: "ROYAL FLUSH",
+				value: -1
+			}]
+		]
+	)("should return the correct hand eval", async (hand, expected) => {
+		// act
+		const result = EvaluateHand(hand);
+
+		// assert
+		expect(result).toStrictEqual(expected);
+	})
+
+})

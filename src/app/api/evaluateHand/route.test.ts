@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { POST } from './route';
-import { Card, Suit } from '@/app/lib/card';
-import { RankNumberToRankString } from '@/app/lib/utils';
-import { evalHand } from 'poker-evaluator';
+import { Suit } from '@/app/lib/card';
+import * as Utils from '@/app/lib/utils';
 
 jest.mock('next/server', () => ({
 	NextResponse: {
@@ -10,9 +9,12 @@ jest.mock('next/server', () => ({
 	},
 }));
 
-jest.mock('poker-evaluator', () => ({
-	evalHand: jest.fn(),
-}));
+jest.mock('../../lib/utils', () => {
+	return {
+		__esModule: true,
+		...jest.requireActual('../../lib/utils')
+	};
+});
 
 describe('POST function', () => {
 	let request: any;
@@ -25,25 +27,30 @@ describe('POST function', () => {
 		jest.clearAllMocks();
 	});
 
-	it('should convert the hand to a string representation and evaluate it', async () => {
+	it("should return the correct hand eval", async () => {
 		// arrange
-		const hand: Card[] = [
-			{ rank: 1, suit: Suit.spades, id: '1s' },
+		request.json.mockResolvedValue([
+			{ rank: 14, suit: Suit.spades, id: '1s' },
 			{ rank: 13, suit: Suit.hearts, id: '13h' },
 			{ rank: 10, suit: Suit.diamonds, id: '10d' },
 			{ rank: 5, suit: Suit.clubs, id: '5c' },
 			{ rank: 7, suit: Suit.spades, id: '7s' },
-		];
-
-		request.json.mockResolvedValue(hand);
-		(evalHand as jest.Mock).mockReturnValue({ value: 42 });
+		]);
+		jest.spyOn(Utils, "EvaluateHand").mockReturnValue({
+			result: "High Card",
+			value: 1
+		});
 
 		// act
 		await POST(request);
 
 		// assert
-		expect(evalHand).toHaveBeenCalledWith(['As', 'Kh', 'Td', '5c', '7s']);
-		expect(NextResponse.json).toHaveBeenCalledWith({ content: { value: 42 } });
+		expect(NextResponse.json).toHaveBeenCalledWith({
+			content: {
+				result: "High Card",
+				value: 1
+			}
+		});
 	});
 });
 

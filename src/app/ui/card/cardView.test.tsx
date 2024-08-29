@@ -28,9 +28,9 @@ describe('Card View Component', () => {
 	it('renders correctly for an Ace card', () => {
 		// arrange
 		const card: Card = {
-			rank: 1,
+			rank: 14,
 			suit: Suit.clubs,
-			id: "1C"
+			id: "14C"
 		};
 
 		// act
@@ -42,11 +42,11 @@ describe('Card View Component', () => {
 		expect(ranks.length).toBe(2);
 
 		// only 1 column
-		expect(screen.getByTestId('1C-column0')).toBeInTheDocument();
+		expect(screen.getByTestId('14C-column0')).toBeInTheDocument();
 
 		// only 1 icon in the column
-		expect(screen.getByTestId('1C-column0').children.length).toBe(1);
-		expect(screen.getByTestId('1C-column0-0')).toBeInTheDocument();
+		expect(screen.getByTestId('14C-column0').children.length).toBe(1);
+		expect(screen.getByTestId('14C-column0-0')).toBeInTheDocument();
 	});
 
 	it('renders correctly for a 2 card', () => {
