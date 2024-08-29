@@ -1,6 +1,6 @@
-## Live demo
+## Live site
 This project is currently [`live`](https://poker-coral-five.vercel.app/), hosted on Vercel.
-Use the link to view the live demo: [`Poker`](https://poker-coral-five.vercel.app/)
+Use the link to view the live site: [`Poker`](https://poker-coral-five.vercel.app/)
 
 ## Running the project
 To run the development server:
