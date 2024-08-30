@@ -8,7 +8,7 @@ export async function fetchHand(handSize: string): Promise<Card[]> {
 		const data = await response.json();
 		if (response.ok) {
 			// used to simulate longer "shuffling"
-			// await sleep(1000);
+			await sleep(1000);
 			return data.content;
 		} else {
 			console.error("Failed to deal: ", data.error);
