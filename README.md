@@ -1,3 +1,7 @@
+## About this project
+This project shuffles a deck of cards, dealing 5 cards to the user, and evaluating the hand based on the standard poker hands.
+It uses [`poker-hand-evaluator`](https://www.npmjs.com/package/poker-hand-evaluator?activeTab=readme) for the evaluating function.
+
 ## Live site
 This project is currently [`live`](https://poker-coral-five.vercel.app/), hosted on Vercel.
 Use the link to view the live site: [`Poker`](https://poker-coral-five.vercel.app/)
