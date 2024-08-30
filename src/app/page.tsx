@@ -5,6 +5,7 @@ import React from "react";
 import { Card, EvaluatedHand } from "./lib/card";
 import { fetchHand, fetchEvaluation } from "./lib/data";
 import CardView from "./ui/card/cardView";
+import Image from 'next/image';
 
 export default function Game() {
 	const [bestHand, setBestHand] = React.useState<EvaluatedHand | null>(null);
@@ -65,25 +66,35 @@ export default function Game() {
 				</div>
 
 				{loading &&
-					<div className={styles.loading}>Dealing...</div>
+					<div className={styles.loading}>
+						<Image
+							src="/CardShuffle.gif"
+							width={450}
+							height={270}
+							alt="Shuffling loading animation"
+						/>
+						<div>
+							SHUFFLING...
+						</div>
+					</div>
 				}
 				{!loading &&
 					<>
 						<div className={styles.hand}>
-							{hand.map(x => {
-								return (<CardView key={x.id} card={x} />)
+							{hand.map((x, i) => {
+								return (<CardView key={x.id} card={x} index={i} />)
 							})}
 						</div>
 						{result != null &&
 							<div className={styles.result}>{result?.result}!</div>
 						}
+						{bestHand != null && bestHand.result != null &&
+							<div className={styles['best-hand']}>
+								<div>Best Hand</div>
+								<div>{bestHand.result}</div>
+							</div>
+						}
 					</>
-				}
-				{bestHand != null && bestHand.result != null &&
-					<div className={styles['best-hand']}>
-						<div>Best Hand</div>
-						<div>{bestHand.result}</div>
-					</div>
 				}
 			</div>
 		</div>

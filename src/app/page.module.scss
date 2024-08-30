@@ -20,6 +20,28 @@
 			color: white;
 		}
 
+
+
+		.hand {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: .5rem;
+			padding: .25rem;
+		}
+
+		.result {
+			padding: 1rem 0;
+			text-transform: uppercase;
+			color: rgb(21, 63, 53);
+			font-weight: 500;
+			background: rgb(0, 0, 0);
+			background: linear-gradient(90deg, #0000 0%, #8ff1ea 25%, #8ff1ea 75%, #0000 100%);
+			width: 100%;
+			text-align: center;
+		}
+
 		.best-hand {
 			display: flex;
 			flex-direction: column;
@@ -44,34 +66,12 @@
 			}
 		}
 
-		.hand {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			flex-wrap: wrap;
-			gap: .5rem;
-			padding: .25rem;
-		}
-
-		.result {
-			padding: 1rem 0;
-			text-transform: uppercase;
-			color: rgb(21, 63, 53);
-			font-weight: 500;
-			background: rgb(0, 0, 0);
-			background: linear-gradient(90deg, #0000 0%, #8ff1ea 25%, #8ff1ea 75%, #0000 100%);
-			width: 100%;
-			text-align: center;
-		}
-
 		.loading {
 			display: flex;
+			flex-direction: column;
 			align-items: center;
-			justify-content: center;
 			color: #c0fffb;
-			height: 10rem;
 			width: 100%;
-			background: linear-gradient(90deg, #0000 0%, #8ff1ea33 25%, #8ff1ea33 75%, #0000 100%);
 		}
 	}
 }

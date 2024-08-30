@@ -4,20 +4,12 @@ $laptop: 1024px;
 $desktop: 1200px;
 
 .card {
-	border-radius: .25rem;
-	display: grid;
-	grid-template-columns: 1fr 5fr 1fr;
-	grid-template-rows: 1fr 6fr 1fr;
-	box-shadow: 0 .2rem .5rem rgba(0, 0, 0, .5);
-	padding: .5rem;
 	width: 7rem;
 	height: 10rem;
-	background-color: white;
 
 	@media screen and (max-width: $mobile) {
-		padding: .25rem;
-		width: 3.5rem;
-		height: 5rem;
+		width: 5rem;
+		height: 7rem;
 	}
 
 	&.hearts,
@@ -30,70 +22,128 @@ $desktop: 1200px;
 		color: black;
 	}
 
-	.rank {
-		font-weight: 700;
+	.case-inner {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		transition: transform 0.8s;
+		transform-style: preserve-3d;
+		transform: rotateY(180deg);
+		animation: flip 0.5s forwards;
 
-		@media screen and (max-width: $mobile) {
-			font-size: .75rem;
+		.card-front,
+		.card-back {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			-webkit-backface-visibility: hidden;
+			backface-visibility: hidden;
 		}
 
-		&:last-child {
-			grid-area: 3 / 3;
-			transform: rotate(180deg);
-		}
-	}
+		.card-front {
+			display: grid;
+			grid-template-columns: 1fr 5fr 1fr;
+			grid-template-rows: 1fr 6fr 1fr;
+			box-shadow: 0 .2rem .5rem rgba(0, 0, 0, .5);
+			background-color: white;
+			border-radius: .25rem;
+			padding: .5rem;
+			width: calc(100% - 1rem);
+			height: calc(100% - 1rem);
 
-	.suits {
-		grid-area: 1 / 2 / span 3 / 2;
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+			@media screen and (max-width: $mobile) {
+				padding: .25rem;
+				width: calc(100% - .5rem);
+				height: calc(100% - .5rem);
+			}
 
-		.suit-column {
-			display: flex;
-			flex-direction: column;
-			justify-content: space-evenly;
+			.rank {
+				font-weight: 700;
 
-			&:first-child:last-child {
-				grid-column: 1 / span 3;
+				@media screen and (max-width: $mobile) {
+					font-size: .75rem;
+				}
 
-				.suit {
-					font-size: 4rem;
+				&:last-child {
+					grid-area: 3 / 3;
+					transform: rotate(180deg);
+				}
+			}
 
-					@media screen and (max-width: $mobile) {
-						font-size: 3rem;
+			.suits {
+				grid-area: 1 / 2 / span 3 / 2;
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+
+				.suit-column {
+					display: flex;
+					flex-direction: column;
+					justify-content: space-evenly;
+
+					&:first-child:last-child {
+						grid-column: 1 / span 3;
+
+						.suit {
+							font-size: 4rem;
+
+							@media screen and (max-width: $mobile) {
+								font-size: 3rem;
+							}
+						}
+					}
+
+					.suit {
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						font-size: 2rem;
+
+						@media screen and (max-width: $mobile) {
+							font-size: 1.25rem;
+						}
+
+						&:nth-last-child(1),
+						&:nth-last-child(2) {
+							transform: rotate(180deg);
+						}
+
+						&:nth-child(1),
+						&:nth-child(2):nth-last-child(2) {
+							transform: rotate(0deg);
+						}
 					}
 				}
 			}
 
-			.suit {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-size: 2rem;
+			.suit-image {
+				grid-area: 1 / 2 / span 3 / 2;
 
-				@media screen and (max-width: $mobile) {
-					font-size: 1rem;
-				}
-
-				&:nth-last-child(1),
-				&:nth-last-child(2) {
-					transform: rotate(180deg);
-				}
-
-				&:nth-child(1),
-				&:nth-child(2):nth-last-child(2) {
-					transform: rotate(0deg);
+				img {
+					width: 100%;
+					max-height: 100%;
 				}
 			}
 		}
+
+		.card-back {
+			background-color: white;
+			border-radius: .25rem;
+			transform: rotateY(180deg);
+
+			img {
+				max-width: 100%;
+				max-height: 100%;
+			}
+		}
+	}
+}
+
+@keyframes flip {
+	from {
+		transform: rotateY(180deg);
 	}
 
-	.suit-image {
-		grid-area: 1 / 2 / span 3 / 2;
-
-		img {
-			width: 100%;
-			max-height: 100%;
-		}
+	to {
+		transform: rotateY(0deg);
 	}
 }

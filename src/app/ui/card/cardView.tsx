@@ -4,7 +4,7 @@ import styles from "./card.module.scss";
 import { GetCardFace, GetSuitUnicode, RankNumberToRankString } from "@/app/lib/utils";
 import Image from 'next/image';
 
-export default function CardView({ card }: { card: Card }) {
+export default function CardView({ card, index }: { card: Card, index: number }) {
 	// each card is made up of columns with icons
 	const suitIcons: string[][] = [];
 	const suitIcon = GetSuitUnicode(card.suit);
@@ -94,9 +94,23 @@ export default function CardView({ card }: { card: Card }) {
 				[styles.clubs]: card.suit == Suit.clubs
 			}
 		)}>
-			<div className={styles.rank}>{RankNumberToRankString(card.rank, false)}</div>
-			{suit}
-			<div className={styles.rank}>{RankNumberToRankString(card.rank, false)}</div>
+			<div className={styles['case-inner']} style={{
+				animationDelay: `${index * 0.25}s`
+			}}>
+				<div className={styles['card-front']}>
+					<div className={styles.rank}>{RankNumberToRankString(card.rank, false)}</div>
+					{suit}
+					<div className={styles.rank}>{RankNumberToRankString(card.rank, false)}</div>
+				</div>
+				<div className={styles['card-back']}>
+					<Image
+						src="/CardBack.svg"
+						width={128}
+						height={176}
+						alt="Card backing"
+					/>
+				</div>
+			</div>
 		</div>
 	);
 }

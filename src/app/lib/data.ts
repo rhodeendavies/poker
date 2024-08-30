@@ -1,10 +1,14 @@
 import { Card, EvaluatedHand } from "./card";
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 export async function fetchHand(handSize: string): Promise<Card[]> {
 	try {
 		const response = await fetch(`/api/dealHand?handSize=${handSize}`);
 		const data = await response.json();
 		if (response.ok) {
+			// used to simulate longer "shuffling"
+			// await sleep(1000);
 			return data.content;
 		} else {
 			console.error("Failed to deal: ", data.error);
